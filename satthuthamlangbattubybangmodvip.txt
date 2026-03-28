@@ -1,0 +1,87 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local RedEvent = ReplicatedStorage:WaitForChild("RedEvent")
+
+-- CÀI ĐẶT
+local KillAura = false
+Phạm vi cục bộ = 20
+
+-- Giao diện người dùng
+local gui = Instance.new("ScreenGui", LocalPlayer.PlayerGui)
+gui.Name = "bangmod"
+
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0,220,0,130)
+main.Position = UDim2.new(0.4,0,0.3,0)
+main.BackgroundColor3 = Color3.fromRGB(20,20,25)
+main.Active = true
+main.Draggable = true
+Instance.new("UICorner", main)
+
+-- TIÊU ĐỀ
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1,0,0,30)
+title.Text = "💀by:bangmodvip"
+title.BackgroundColor3 = Color3.fromRGB(80,0,0)
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+
+-- CÁI NÚT
+local btn = Instance.new("TextButton", main)
+btn.Size = UDim2.new(0.8,0,0,40)
+btn.Position = UDim2.new(0.1,0,0.45,0)
+btn.Text = "Hiệu ứng Kill Aura: TẮT"
+btn.BackgroundColor3 = Color3.fromRGB(120,0,0)
+btn.TextColor3 = Color3.new(1,1,1)
+
+-- CHUYỂN ĐỔI
+btn.MouseButton1Click:Connect(function()
+	KillAura = không phải KillAura
+	btn.Text = "Hào quang sát thương: "..(KillAura và "ON" hoặc "OFF")
+	btn.BackgroundColor3 = KillAura and Color3.fromRGB(0,150,0) or Color3.fromRGB(120,0,0)
+kết thúc)
+
+-- TÌM ĐỊA ĐIỂM GẦN NHẤT
+hàm cục bộ getNearest()
+	cục bộ gần nhất, khoảng cách = nil, Phạm vi
+	
+	for _, v in pairs(Players:GetPlayers()) do
+		if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+			local hrp = v.Character.HumanoidRootPart
+			local hum = v.Character:FindFirstChildOfClass("Humanoid")
+			
+			nếu hum và hum.Health > 0 thì
+				local d = LocalPlayer:DistanceFromCharacter(hrp.Position)
+				nếu d < dist thì
+					khoảng cách = d
+					gần nhất = v
+				kết thúc
+			kết thúc
+		kết thúc
+	kết thúc
+	
+	trở lại điểm gần nhất
+kết thúc
+
+-- CHỨC NĂNG TẤN CÔNG
+hàm cục bộ tấn công mục tiêu (target)
+	nếu mục tiêu và mục tiêu.Character thì
+		pcall(function()
+			RedEvent:FireServer(target.Character)
+		kết thúc)
+	kết thúc
+kết thúc
+
+-- LOOP (không bị lag + có thể tắt)
+task.spawn(function()
+	trong khi tác vụ.wait(0.12) thực hiện
+		nếu KillAura thì
+			mục tiêu cục bộ = getNearest()
+			nếu là mục tiêu thì
+				tấn công mục tiêu (target)
+			kết thúc
+		kết thúc
+	kết thúc
+kết thúc)
